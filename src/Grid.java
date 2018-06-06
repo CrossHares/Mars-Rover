@@ -1,42 +1,43 @@
-
+import java.util.ArrayList;
 
 public class Grid {
     private boolean planet [][];
 
+
     /**
-     Initialize the planet surface. True on the grid means
-     there is an obstical.
+     * Initialize the planet grid.
+     * @param Obstacles List of obstacle locations within the grid
+     * @param width width of the grid representing the planet
+     * @param height height of the grid representing the planet.
      */
-    public Grid (boolean Planet [][] ){
-        planet = new boolean [Planet.length][Planet[0].length];
-        for (int i = 0; i < Planet.length; i++){
-            for (int j = 0; j < Planet[i].length; j++){
-                this.planet[i][j] = Planet[i][j];
-            }
-        }
+    public Grid (ArrayList<Location> Obstacles, int width, int height){
+        planet = new boolean [width][height];
+        Obstacles.stream().forEach(
+                obs -> {addObstacle(obs);}
+        );
     }
 
     /**
-     Allows for new obsticals to be added to the planet
+     Allows for new obstacles to be added to the planet
 
-     @param  spot: position to put new obstical
+     @param  spot: position to put new obstacle
      */
-    public void addObsticle (Location spot){
+    public void addObstacle (Location spot){
         planet[spot.getX()][spot.getY()] = true;
     }
     /**
-     Allows for new obsticals to be removed from the planet
+     Allows for new obstacles to be removed from the planet
 
-     @param  spot: position to remove obstical
+     @param  spot: position to remove obstacle
      */
-    public void removeObsticle (Location spot){
+    public void removeObstacle (Location spot){
         planet[spot.getX()][spot.getY()] = false;
     }
 
     /**
-     Checks the surface at the given location for obsticals
+     Checks the surface at the given location for obstacles
 
-     @param  spot: Location to check for obsticals
+     @param  spot: Location to check for obstacles
      */
     public boolean isClear (Location spot){
         return !(planet[spot.getX()][spot.getY()]);

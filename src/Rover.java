@@ -1,10 +1,12 @@
 import java.util.stream.Stream;
 
 public class Rover {
+    private final int FORWARD = 1;
+    private final int BACKWARD = -1;
+
     private Compass compass;
     private Location position;
     private Grid planet;
-    private Compass.Direction facing;
 
 
 
@@ -13,16 +15,35 @@ public class Rover {
      *
      * @param  X: x coordinate of the rover's starting location
      * @param  Y: y coordinate of the rover's starting location
-     * @param  direction: String representing the current direction the rover is facing
+     * @param  startingDirection: String representing the current direction the rover is facing
      * @param  Planet: a grid representing the current planet the rover is on
      **/
-    public Rover (int X, int Y, String direction, Grid Planet){
+    public Rover (int X, int Y, char startingDirection, Grid Planet){
         position = new Location (X,Y);
         this.planet = Planet;
-        compass = new Compass(direction);
+
+        switch (startingDirection){
+            case 'N':
+                compass = new Compass("NORTH");
+                break;
+            case 'S':
+                compass = new Compass("SOUTH");
+                break;
+            case 'E':
+                compass = new Compass("EAST");
+                break;
+            case 'W':
+                compass = new Compass("WEST");
+                break;
+
+        }
 
     }
 
+
+    public Location getLocation(){
+        return position;
+    }
     /**
      * Given a list of commands chars this method will
      * loop through and execute the commands.
@@ -58,7 +79,7 @@ public class Rover {
     }
 
     /**
-     *Checks for type of command and calls coresponding method.
+     *Checks for type of command and calls corresponding method.
      *
      * @param comm: This is the command the rover must execute next
      */
@@ -71,6 +92,8 @@ public class Rover {
             moveForward();
         }else if (comm == 'b'){
             moveBackward();
+        }else{
+            throw new roverException("Invalid Command, Rover is no stopping");
         }
     }
 
@@ -91,12 +114,12 @@ public class Rover {
         if (y == -1 ){
             y = planet.getMaxY();
         }
-        Location test = new Location (x%planet.getMaxX(), y%planet.getMaxY());
+        Location test = new Location (x%(planet.getMaxX()+1), y%(planet.getMaxY()+1));
 
         if (planet.isClear(test)){
             position.setLocation(test);
         }else{
-            throw new roverException("Obstacle  in Path");
+            throw new roverException("Obstacle in Path");
         }
     }
 
@@ -107,7 +130,7 @@ public class Rover {
      * @throws roverException
      */
     private void moveForward()throws roverException{
-        move(1);
+        move(FORWARD);
 
     }
 
@@ -117,26 +140,26 @@ public class Rover {
      * @throws roverException
      */
     private void moveBackward()throws roverException{
-       move(-1);
+       move(BACKWARD);
 
     }
 
-
-
-    /**
-     * Turn the rover 90 degrees to the left
-     */
-    private void turnLeft (){
-        compass.rotateClockwise();
-    }
 
     /**
      * Turn the rover 90 degrees to the right
      */
-    private void turnRight(){
+    private void turnRight (){
+        compass.rotateClockwise();
+    }
+
+    /**
+     * Turn the rover 90 degrees to the left
+     */
+    private void turnLeft(){
 
         compass.rotateCounterclockwise();
     }
+
 }
 
 class roverException extends Exception
